@@ -17,7 +17,7 @@ Matan Bachar -  id: 203167333, login: matanba
 //============================================================================//
 #include <Windows.h>
 #include <process.h>
-#include <stdio.h>
+#include <cstdio>
 #include <stdbool.h>
 #include <time.h>
 
@@ -27,12 +27,14 @@ Matan Bachar -  id: 203167333, login: matanba
 
 #define N 3             //The size of root (Complexity is an exponential N^3)
 #define DIGITS N*N      //How many digits are allowed or the size of each row
-//in the board
+						//in the board
 #define FAILED false
 #define SUCCESS true
 #define POSSIBLE 1
 #define IMPOSSIBLE 0
 #define FINISHED_BOARD false
+#define MAX_CELL_INPUT DIGITS*DIGITS+1
+#define USER_INPUT_LEN 3 
 
 /******************************************************************************
 * Solution enum for startChild - each solution is a different implementation

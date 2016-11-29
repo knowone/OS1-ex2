@@ -154,6 +154,66 @@ Board getBoardFromUser() {
 
 	return board;
 }
+/*
+char** getBoardCharFromUser() {
+	char** boardArr = 0;
+	boardArr = new char*[MAX_CELL_INPUT];
+	char* input;
+	while (scanf("%s", input)) {
+		if (input == "-1")
+		{
+			
+		}
+	}
+	return boardArr;
+}
+*/
+Board convertToBoardFromCharArr(char** arr) {
+	int i, j, k;
+	Board board = {};                               //Create empty struct
+	for (i = 0; i < DIGITS; ++i) {              //"Zero-out" the Board
+		for (j = 0; j < DIGITS; ++j) {
+			board._board[i][j]._content = 0;
+			for (k = 0; k < DIGITS; ++k) {
+				board._board[i][j]._markupTable[k] = POSSIBLE;  //make all cells possible
+			}
+			board._board[i][j]._priority = DIGITS;  //all cells have minimum priority
+		}
+	}
+	i = 0;
+	int rowPos, colPos, digit;
+	int input;
+	bool stop = false;
+	//printf("Input your data\n");
+	while (!stop) {                  //user has input
+		if (sscanf(arr[i],"%d", &input) > 0) {
+			if (input == -1) {       //indicating user stopped entering sets-of-3
+				stop = true;
+			}
+			else {                   //get next set-of-3 from user
+				rowPos = input;
+				if (sscanf(arr[i],"%d", colPos)) {
+					stop = true;
+				}
+				if (sscanf(arr[i],"%d", &digit)) {
+					stop = true;
+				}
+				i++;
+				board._board[rowPos][colPos]._content = digit;
+				board._board[rowPos][colPos]._priority = 0;     //Cell is in use. Has no priority.
+				updateMarkup(&board, rowPos, colPos, digit);    //Update all relevant cells affected by the cell's
+																//content.
+			}
+		}
+		else {
+			stop = true;
+		}
+	}
+
+	return board;
+
+
+}
 
 bool updateMarkup(Board* board, int row, int col, int digit) {
 	bool result = SUCCESS;
@@ -348,7 +408,6 @@ bool solveB(Board* board, int row, int col) {
 	return FAILED;
 }
 
-
 bool startChild(Board* b, SOLUTION s) {
 	bool result;
 	time_t start = time(NULL);      //Get the initial starting time
@@ -373,44 +432,10 @@ bool startChild(Board* b, SOLUTION s) {
 }
 
 int main() {
-	int i;
+	//int i;
 	Board b1 = getBoardFromUser();  //Create a user with user input
 	Board b2 = copyBoard(&b1);      //Create a hard-copy of the board for second process
-	int status[2];                //Store both children PID
-	status[0] = _spawnl();             //create first process
-	if (status[0] == 0) {
-		//first child continues here
-		if (startChild(&b1, SOLUTION_A)) {
-			printf("Child %d solution:\n", SOLUTION_A + 1);
-			printBoard(&b1);        //print the solution board
-		}
-		else {
-			printf("Failed creating first child process!\n");
-			return -1;
-		}
 
-	}
-	else {                           //Parent process continues
-		status[1] = fork();         //creates second child process
-		if (status[1] == 0) {
-			//second child continues here
-			if (startChild(&b2, SOLUTION_B)) {
-				printf("Child %d solution:\n", SOLUTION_B + 1);
-				printBoard(&b2);    //print the solution board
-			}
-			else {
-				printf("Failed creating second child process!\n");
-				return -1;
-			}
-		}
-		else {
-			//parent process continues
-			for (i = 0; i <= 1; ++i) {      //Wait for both children to finish running.
-				waitpid(status[i], NULL, 0);
-			}
-			printf("Enjoy your solutions!\n"); //print out a good-bye msg
-		}
-	}
 
 	return 0;
 }
