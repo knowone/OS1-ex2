@@ -154,20 +154,35 @@ Board getBoardFromUser() {
 
 	return board;
 }
-/*
-char** getBoardCharFromUser() {
-	char** boardArr = 0;
-	boardArr = new char*[MAX_CELL_INPUT];
+
+char** getBoardAsStringFromUser() {
+	
+	int length = 0;
+	char** output = new char*[MAX_CELL_INPUT];
 	char* input;
-	while (scanf("%s", input)) {
-		if (input == "-1")
-		{
-			
+	int i = 0;
+	bool stop = DO_NOT;
+	printf("Enter Your input in sets of 3 (row, column, digit) with a space seperating between numbers or enter -1 to finish\n");
+	while (DO_NOT == stop) {
+		if (scanf("%s", input) > 0) {
+			output[i++] = input;
+			if (input == "-1") {
+				stop = ME_NOW;
+			}
+			if (i == MAX_CELL_INPUT) { //This is undesired, better to fail this, but we assume correct input
+				stop = ME_NOW;
+				output[i - 1] = "-1";
+			}
+		}
+		else {
+			stop = ME_NOW;
+			//Why should this happen?
 		}
 	}
-	return boardArr;
+	return output;
+
 }
-*/
+
 Board convertToBoardFromCharArr(char** arr) {
 	int i, j, k;
 	Board board = {};                               //Create empty struct
@@ -180,25 +195,24 @@ Board convertToBoardFromCharArr(char** arr) {
 			board._board[i][j]._priority = DIGITS;  //all cells have minimum priority
 		}
 	}
-	i = 0;
+	i = 1;
 	int rowPos, colPos, digit;
 	int input;
 	bool stop = false;
 	//printf("Input your data\n");
 	while (!stop) {                  //user has input
-		if (sscanf(arr[i],"%d", &input) > 0) {
+		if (sscanf(arr[i++],"%d", &input) > 0) {
 			if (input == -1) {       //indicating user stopped entering sets-of-3
 				stop = true;
 			}
 			else {                   //get next set-of-3 from user
 				rowPos = input;
-				if (sscanf(arr[i],"%d", colPos)) {
+				if (sscanf(arr[i++],"%d", colPos)) {
 					stop = true;
 				}
-				if (sscanf(arr[i],"%d", &digit)) {
+				if (sscanf(arr[i++],"%d", &digit)) {
 					stop = true;
 				}
-				i++;
 				board._board[rowPos][colPos]._content = digit;
 				board._board[rowPos][colPos]._priority = 0;     //Cell is in use. Has no priority.
 				updateMarkup(&board, rowPos, colPos, digit);    //Update all relevant cells affected by the cell's

@@ -17,7 +17,7 @@ Matan Bachar -  id: 203167333, login: matanba
 //============================================================================//
 #include <Windows.h>
 #include <process.h>
-#include <cstdio>
+#include <iostream>
 #include <stdbool.h>
 #include <time.h>
 
@@ -35,6 +35,8 @@ Matan Bachar -  id: 203167333, login: matanba
 #define FINISHED_BOARD false
 #define MAX_CELL_INPUT DIGITS*DIGITS+1
 #define USER_INPUT_LEN 3 
+#define DO_NOT true
+#define ME_NOW false
 
 /******************************************************************************
 * Solution enum for startChild - each solution is a different implementation
@@ -197,3 +199,7 @@ bool solveB(Board *b, int row, int col);
 * @return true if algorithm chosen returned true. False otherwise.
 *****************************************************************************/
 bool startChild(Board* b, SOLUTION s);
+
+char** getBoardAsStringFromUser();
+
+Board convertToBoardFromCharArr(char** arr);
