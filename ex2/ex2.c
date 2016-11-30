@@ -97,7 +97,7 @@ void printBoard(Board* board) {
 
 
 Board copyBoard(Board* b) {
-	Board newBoard = {};                //create empty struct
+	Board newBoard;                //create empty struct
 	int i, j, k;
 	for (i = 0; i < DIGITS; ++i) {
 		for (j = 0; j < DIGITS; ++j) {
@@ -114,76 +114,32 @@ Board copyBoard(Board* b) {
 	return newBoard;
 }
 
-Board getBoardFromUser() {
-
-	int i, j, k;
-	Board board = {};                               //Create empty struct
-	for (i = 0; i < DIGITS; ++i) {              //"Zero-out" the Board
-		for (j = 0; j < DIGITS; ++j) {
-			board._board[i][j]._content = 0;
-			for (k = 0; k < DIGITS; ++k) {
-				board._board[i][j]._markupTable[k] = POSSIBLE;  //make all cells possible
-			}
-			board._board[i][j]._priority = DIGITS;  //all cells have minimum priority
-		}
+char* getBoardAsStringFromUser() {
+	int size = 2;
+	int pos = 0;
+	char* output = (char*)malloc(sizeof(char*)*size);
+	char c;
+	printf("Input your data:\n");
+	while ((c = getchar()) != '-') {
+		output[pos] = c;
+		pos++;
+		size++;
+		output = (char*)realloc(output, sizeof(char)*size);
 	}
-	int rowPos, colPos, digit;
-	int input;
-	bool stop = false;
-	printf("Input your data\n");
-	while (!stop) {                  //user has input
-		if (scanf("%d", &input)>0) {
-			if (input == -1) {       //indicating user stopped entering sets-of-3
-				stop = true;
-			}
-			else {                   //get next set-of-3 from user
-				rowPos = input;
-				if (scanf("%d", &colPos)) {
-					stop = true;
-				}
-				if (scanf("%d", &digit)) {
-					stop = true;
-				}
-				board._board[rowPos][colPos]._content = digit;
-				board._board[rowPos][colPos]._priority = 0;     //Cell is in use. Has no priority.
-				updateMarkup(&board, rowPos, colPos, digit);    //Update all relevant cells affected by the cell's
-																//content.
-			}
-		}
+	if (c == '-') {
+		output[pos] = c;
+		size += 2;
+		output = (char*)realloc(output, sizeof(char)*size);
+		output[pos + 1] = getchar(); //should be 1 but no worries
+		output[pos + 2] = '\0';		//null terminated string
+		getchar();
 	}
 
-	return board;
-}
-
-char** getBoardAsStringFromUser() {
-	
-	int length = 0;
-	char** output = new char*[MAX_CELL_INPUT];
-	char* input;
-	int i = 0;
-	bool stop = DO_NOT;
-	printf("Enter Your input in sets of 3 (row, column, digit) with a space seperating between numbers or enter -1 to finish\n");
-	while (DO_NOT == stop) {
-		if (scanf("%s", input) > 0) {
-			output[i++] = input;
-			if (input == "-1") {
-				stop = ME_NOW;
-			}
-			if (i == MAX_CELL_INPUT) { //This is undesired, better to fail this, but we assume correct input
-				stop = ME_NOW;
-				output[i - 1] = "-1";
-			}
-		}
-		else {
-			stop = ME_NOW;
-			//Why should this happen?
-		}
-	}
 	return output;
 
 }
 
-Board convertToBoardFromCharArr(char** arr) {
+Board convertToBoardFromCharArr(char* arr) {
 	int i, j, k;
 	Board board = {};                               //Create empty struct
 	for (i = 0; i < DIGITS; ++i) {              //"Zero-out" the Board
@@ -195,42 +151,41 @@ Board convertToBoardFromCharArr(char** arr) {
 			board._board[i][j]._priority = DIGITS;  //all cells have minimum priority
 		}
 	}
-	i = 1;
-	int rowPos, colPos, digit;
-	int input;
-	bool stop = false;
-	//printf("Input your data\n");
-	while (!stop) {                  //user has input
-		if (sscanf(arr[i++],"%d", &input) > 0) {
-			if (input == -1) {       //indicating user stopped entering sets-of-3
-				stop = true;
-			}
-			else {                   //get next set-of-3 from user
-				rowPos = input;
-				if (sscanf(arr[i++],"%d", colPos)) {
-					stop = true;
-				}
-				if (sscanf(arr[i++],"%d", &digit)) {
-					stop = true;
-				}
+	//i = 1;
+	int rowPos;
+	int colPos;
+	int digit;
+	char* nextToken = NULL;
+	char* seperators = " \n";
+	char* token = strtok_s(arr, seperators, &nextToken);
+	while (token != NULL && atoi(token) != -1) {
+		rowPos = atoi(token);
+		if ((token = strtok_s(NULL, seperators, &nextToken)) != NULL) {
+			colPos = atoi(token);
+			if ((token = strtok_s(NULL, seperators, &nextToken)) != NULL) {
+				digit = atoi(token);
+
 				board._board[rowPos][colPos]._content = digit;
 				board._board[rowPos][colPos]._priority = 0;     //Cell is in use. Has no priority.
 				updateMarkup(&board, rowPos, colPos, digit);    //Update all relevant cells affected by the cell's
-																//content.
+				token = strtok_s(NULL, seperators, &nextToken);
+			}
+			else {
+				//failed to find next token
 			}
 		}
 		else {
-			stop = true;
+			//failed to find next token
 		}
 	}
-
+	if (token == NULL){
+		//failed, go to end of array without -1
+	}
 	return board;
-
-
 }
 
 bool updateMarkup(Board* board, int row, int col, int digit) {
-	bool result = SUCCESS;
+	bool result = SUCCEEDED;
 	int i;
 	/* **********************************************************************************************
 	* All three blocks has the same logic:
@@ -329,7 +284,7 @@ bool findHighestPriority(Board* board, int* row, int* col) {
 					*col = j;                                       //(row,col)
 				}
 				if (minPriority == 1) {                              //immediately stop if found an only-1-option cell
-					return SUCCESS;
+					return SUCCEEDED;
 				}
 			}
 		}
@@ -338,17 +293,17 @@ bool findHighestPriority(Board* board, int* row, int* col) {
 		return FINISHED_BOARD;              //this is equals to false
 	}
 	else {
-		return SUCCESS;
+		return SUCCEEDED;
 	}
 
 }
 
 bool solveA(Board *board, int row, int col) {
-	/* Root condition - successfully ending the algorithm.
+	/* Root condition - SUCCEEDEDfully ending the algorithm.
 	* When all the cells of the board have been handled*/
 	if (col == DIGITS && row == DIGITS - 1) {  //row is the last row in array, col the the one after the last
 											   //indicating there are no more cells left
-		return SUCCESS;
+		return SUCCEEDED;
 	}
 	int i;
 	bool result;
@@ -361,8 +316,8 @@ bool solveA(Board *board, int row, int col) {
 			if (isAllowed(board, row, col, i)) { //isAllowed checks for column, row and square assignment options
 				board->_board[row][col]._content = i;   //assign the value if allowed
 				result = solveA(board, row, col + 1);   //go to next column
-				if (result) {                        //If successful then a solution was found
-					return SUCCESS;
+				if (result) {                        //If SUCCEEDEDful then a solution was found
+					return SUCCEEDED;
 				}
 			}
 		}
@@ -388,7 +343,7 @@ bool solveB(Board* board, int row, int col) {
 	* If all cells have 0 priority and non empty content */
 	if (!findHighestPriority(board, &row, &col)) {
 		//updates to the new row and col and if returns false we finished the board
-		return SUCCESS;
+		return SUCCEEDED;
 	}
 
 	//Run through the high-priority cell's markup table (option list)
@@ -403,10 +358,10 @@ bool solveB(Board* board, int row, int col) {
 					board->_board[row][col]._content = i;
 					//Try to fulfill the next high-priority cell.
 					result = solveB(board, row, col);
-					//If unsuccessful reset what was done and try next markup option
+					//If unSUCCEEDEDful reset what was done and try next markup option
 					if (result) {
-						//if successfull - a solution was found - return true
-						return SUCCESS;
+						//if SUCCEEDEDfull - a solution was found - return true
+						return SUCCEEDED;
 					}
 					else {
 
@@ -447,9 +402,14 @@ bool startChild(Board* b, SOLUTION s) {
 
 int main() {
 	//int i;
-	Board b1 = getBoardFromUser();  //Create a user with user input
-	Board b2 = copyBoard(&b1);      //Create a hard-copy of the board for second process
-
+	char* board = getBoardAsStringFromUser();  //Create a user with user input
+	Board b = convertToBoardFromCharArr(board);
+	printBoard(&b);
+	
+	int status_childA, status_childB;
+	
+	status_childA = _spawnl(_P_WAIT, "solveA.exe", "solveA.exe", board);
+	status_childB = _spawnl(_P_WAIT, "solveB.exe", "solveB.exe", board);
 
 	return 0;
 }

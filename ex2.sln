@@ -11,6 +11,10 @@ Global
 		Debug|x86 = Debug|x86
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
+		solveA|x64 = solveA|x64
+		solveA|x86 = solveA|x86
+		SolveB|x64 = SolveB|x64
+		SolveB|x86 = SolveB|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{E81D1688-FCA4-495E-B25E-2CBC87EB0095}.Debug|x64.ActiveCfg = Debug|x64
@@ -21,6 +25,14 @@ Global
 		{E81D1688-FCA4-495E-B25E-2CBC87EB0095}.Release|x64.Build.0 = Release|x64
 		{E81D1688-FCA4-495E-B25E-2CBC87EB0095}.Release|x86.ActiveCfg = Release|Win32
 		{E81D1688-FCA4-495E-B25E-2CBC87EB0095}.Release|x86.Build.0 = Release|Win32
+		{E81D1688-FCA4-495E-B25E-2CBC87EB0095}.solveA|x64.ActiveCfg = solveA|x64
+		{E81D1688-FCA4-495E-B25E-2CBC87EB0095}.solveA|x64.Build.0 = solveA|x64
+		{E81D1688-FCA4-495E-B25E-2CBC87EB0095}.solveA|x86.ActiveCfg = solveA|Win32
+		{E81D1688-FCA4-495E-B25E-2CBC87EB0095}.solveA|x86.Build.0 = solveA|Win32
+		{E81D1688-FCA4-495E-B25E-2CBC87EB0095}.SolveB|x64.ActiveCfg = SolveB|x64
+		{E81D1688-FCA4-495E-B25E-2CBC87EB0095}.SolveB|x64.Build.0 = SolveB|x64
+		{E81D1688-FCA4-495E-B25E-2CBC87EB0095}.SolveB|x86.ActiveCfg = SolveB|Win32
+		{E81D1688-FCA4-495E-B25E-2CBC87EB0095}.SolveB|x86.Build.0 = SolveB|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -17,7 +17,9 @@ Matan Bachar -  id: 203167333, login: matanba
 //============================================================================//
 #include <Windows.h>
 #include <process.h>
-#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <stdbool.h>
 #include <time.h>
 
@@ -28,12 +30,18 @@ Matan Bachar -  id: 203167333, login: matanba
 #define N 3             //The size of root (Complexity is an exponential N^3)
 #define DIGITS N*N      //How many digits are allowed or the size of each row
 						//in the board
+#ifdef FAILED 
 #define FAILED false
-#define SUCCESS true
+#endif
+
+#ifdef SUCCEEDED
+#define SUCCEEDED true
+#endif
+
 #define POSSIBLE 1
 #define IMPOSSIBLE 0
 #define FINISHED_BOARD false
-#define MAX_CELL_INPUT DIGITS*DIGITS+1
+#define MAX_CELL_INPUT (DIGITS*DIGITS)+1
 #define USER_INPUT_LEN 3 
 #define DO_NOT true
 #define ME_NOW false
@@ -200,6 +208,6 @@ bool solveB(Board *b, int row, int col);
 *****************************************************************************/
 bool startChild(Board* b, SOLUTION s);
 
-char** getBoardAsStringFromUser();
+Board convertToBoardFromCharArr(char* arr);
 
-Board convertToBoardFromCharArr(char** arr);
+char* getBoardAsStringFromUser();
