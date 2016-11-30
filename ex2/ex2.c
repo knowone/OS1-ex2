@@ -141,7 +141,7 @@ char* getBoardAsStringFromUser() {
 
 Board convertToBoardFromCharArr(char* arr) {
 	int i, j, k;
-	Board board = {};                               //Create empty struct
+	Board board;                               //Create empty struct
 	for (i = 0; i < DIGITS; ++i) {              //"Zero-out" the Board
 		for (j = 0; j < DIGITS; ++j) {
 			board._board[i][j]._content = 0;
@@ -410,6 +410,6 @@ int main() {
 	
 	status_childA = _spawnl(_P_WAIT, "solveA.exe", "solveA.exe", board);
 	status_childB = _spawnl(_P_WAIT, "solveB.exe", "solveB.exe", board);
-
+	getchar();
 	return 0;
 }
